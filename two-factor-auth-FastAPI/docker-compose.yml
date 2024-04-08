@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  otp:
+    build:
+      context: .
+    ports:
+    - '8080:80'

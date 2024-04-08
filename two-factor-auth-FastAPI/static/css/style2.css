@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('/static/images/1.jpg'); /* путь к вашему изображению */
+    background-size: cover; /* чтобы изображение занимало всю доступную область */
+    background-position: center; /* чтобы изображение оставалось по центру */
+    background-repeat: no-repeat; /* чтобы изображение не повторялось */
+    margin: 0; /* убираем отступы по умолчанию */
+    padding: 0; /* убираем отступы по умолчанию */
+    height: 100vh; /* чтобы фоновое изображение занимало весь экран */
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto; /* центрируем форму горизонтально */
+    margin-top: calc(50vh - 250px); /* центрируем форму вертикально на половине высоты экрана */
+    background-color: rgba(255, 255, 255, 0.8); /* прозрачный фон для формы */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* тень для формы */
+}
+
+label, input, select, textarea {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%; /* чтобы элементы формы занимали всю доступную ширину */
+}
+
+textarea {
+    resize: none; /* отключаем возможность изменения размера поля ввода */
+    max-height: 150px; /* устанавливаем максимальную высоту поля ввода */
+}
+
+input[type="file"] {
+    padding: 10px;
+}
+
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}

@@ -1,0 +1,149 @@
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заполнение профиля</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style2.css') }}">
+    <style>
+        .photo-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Меняйте 300px на нужную вам ширину изображения */
+            grid-gap: 20px;
+        }
+
+        .photo-card {
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .photo-card img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="buttonsContainer">
+    <button id="profileButton"><i class="fas fa-user"></i> Профиль</button>
+    <button id="photosButton"><i class="fas fa-images"></i> Фотографии</button>
+</div>
+
+<form id="profileForm">
+    <input type="hidden" id="email" name="email" value="{{ email }}">
+    <label for="username">Имя пользователя:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="age">Возраст:</label>
+    <input type="number" id="age" name="age" required>
+
+    <label for="gender">Пол:</label>
+    <select id="gender" name="gender" required>
+        <option value="">Выберите пол</option>
+        <option value="male">Мужской</option>
+        <option value="female">Женский</option>
+        <option value="other">Другой</option>
+    </select>
+
+    <label for="interests">Интересы:</label>
+    <textarea id="interests" name="interests" rows="4"></textarea>
+
+    <label for="description">Опишите людей, которые вам нравятся:</label>
+    <textarea id="description" name="description" rows="4"></textarea>
+
+    <label for="photo">Загрузите свою фотографию:</label>
+    <input type="file" id="photo" name="photo" accept="image/*">
+
+    <button type="submit">Сохранить профиль</button>
+</form>
+
+<div id="photosContainer" class="photo-form"></div>
+
+<script>
+    const form = document.getElementById('profileForm');
+    const photosContainer = document.getElementById('photosContainer');
+    const profileButton = document.getElementById('profileButton');
+    const photosButton = document.getElementById('photosButton');
+
+    profileButton.addEventListener('click', () => {
+        form.style.display = 'block';
+        photosContainer.style.display = 'none';
+        clearPhotos();
+    });
+
+    photosButton.addEventListener('click', () => {
+        form.style.display = 'none';
+        photosContainer.style.display = 'grid';
+        clearPhotos();
+    });
+
+    photosButton.addEventListener('click', async () => {
+        try {
+            const email = document.getElementById('email').value;
+            const formData = new FormData();
+            formData.append('email', email);
+            const response = await fetch('/photos', {
+                method: 'POST',
+                body: formData
+            });
+            if (response.ok) {
+                const photoData = await response.json();
+                Object.keys(photoData).forEach(filename => {
+                    const photoCard = document.createElement('div');
+                    photoCard.classList.add('photo-card');
+    
+                    const img = document.createElement('img');
+                    img.src = `/storage/${photoData[filename].url}`;
+                    photoCard.appendChild(img);
+    
+                    const text = document.createElement('p');
+                    text.textContent = photoData[filename].text;
+                    photoCard.appendChild(text);
+    
+                    photosContainer.appendChild(photoCard);
+                });
+            } else {
+                throw new Error('Ошибка загрузки фотографий');
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при загрузке фотографий');
+        }
+    });
+    function clearPhotos() {
+        while (photosContainer.firstChild) {
+            photosContainer.removeChild(photosContainer.firstChild);
+        }
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const email = document.getElementById('email').value;
+        formData.append('email', email);
+        try {
+            const response = await fetch('/save-profile/', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                alert('Профиль успешно сохранен!');
+            } else {
+                throw new Error('Ошибка сохранения профиля');
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при сохранении профиля');
+        }
+    });
+</script>
+
+</body>
+</html>
+{% endblock %}

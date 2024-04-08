@@ -1,0 +1,4 @@
+/.venv
+/two-factor-auth-FastAPI/two_fa_app.db
+/two-factor-auth-FastAPI/__pycache__
+/two-factor-auth-FastAPI/storage/*
